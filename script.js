@@ -2,6 +2,7 @@ const STORAGE_KEY = "jobApplications";
 
 const form = document.getElementById("job-form");
 const jobList = document.getElementById("job-list");
+const formError = document.getElementById("form-error");
 
 let applications = loadApplications();
 renderApplications();
@@ -19,9 +20,11 @@ form.addEventListener("submit", (event) => {
   };
 
   if (!application.company || !application.role || !application.appliedDate) {
+    formError.textContent = "Please fill in company, role, and applied date.";
     return;
   }
 
+  formError.textContent = "";
   applications.unshift(application);
   saveApplications();
   renderApplications();
@@ -56,7 +59,7 @@ function renderApplications() {
       <li class="job-item">
         <strong>${escapeHTML(application.company)}</strong> — ${escapeHTML(application.role)}
         <div class="job-meta">Applied: ${escapeHTML(application.appliedDate)} · Status: ${escapeHTML(application.status)}</div>
-        <button class="delete-btn" data-id="${application.id}" type="button">Delete</button>
+        <button class="delete-btn" data-id="${application.id}" type="button" aria-label="Delete application for ${escapeHTML(application.company)}">Delete</button>
       </li>
     `
     )
@@ -81,7 +84,11 @@ function saveApplications() {
 }
 
 function escapeHTML(value) {
-  return value
+  if (value === null || value === undefined) {
+    return "";
+  }
+
+  return String(value)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")

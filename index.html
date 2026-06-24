@@ -11,22 +11,24 @@
       <h1>Job Application Tracker</h1>
 
       <form id="job-form" class="card">
-        <label>
+        <p id="form-error" class="form-error" role="alert" aria-live="polite"></p>
+
+        <label for="company">
           Company
           <input id="company" name="company" type="text" required />
         </label>
 
-        <label>
+        <label for="role">
           Role
           <input id="role" name="role" type="text" required />
         </label>
 
-        <label>
+        <label for="appliedDate">
           Applied Date
           <input id="appliedDate" name="appliedDate" type="date" required />
         </label>
 
-        <label>
+        <label for="status">
           Status
           <select id="status" name="status">
             <option value="Applied">Applied</option>

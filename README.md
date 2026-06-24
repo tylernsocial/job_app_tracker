@@ -11,4 +11,4 @@ A simple job application tracker built with HTML, CSS, and JavaScript.
 
 ## Run locally
 
-Open `/home/runner/work/job_app_tracker/job_app_tracker/index.html` in your browser.
+Open `index.html` in your browser.
