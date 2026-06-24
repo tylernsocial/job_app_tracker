@@ -59,7 +59,7 @@ function renderApplications() {
       <li class="job-item">
         <strong>${escapeHTML(application.company)}</strong> — ${escapeHTML(application.role)}
         <div class="job-meta">Applied: ${escapeHTML(application.appliedDate)} · Status: ${escapeHTML(application.status)}</div>
-        <button class="delete-btn" data-id="${application.id}" type="button" aria-label="Delete application for ${escapeHTML(application.company)}">Delete</button>
+        <button class="delete-btn" data-id="${application.id}" type="button" aria-label="Delete application">Delete</button>
       </li>
     `
     )
