@@ -39,8 +39,6 @@ form.addEventListener("submit", (event) => {
     appliedDate: formData.get("appliedDate"),
     status: formData.get("status"),
     source: formData.get("source"),
-    priority: formData.get("priority"),
-    contact: formData.get("contact"),
     notes: formData.get("notes"),
     updatedAt: new Date().toISOString(),
   });
@@ -150,7 +148,6 @@ function renderApplications() {
         application.company,
         application.role,
         application.source,
-        application.contact,
         application.notes,
         application.status,
       ]
@@ -179,7 +176,6 @@ function renderApplication(application) {
     ? `<a href="${escapeAttribute(application.applicationLink)}" target="_blank" rel="noreferrer">application</a>`
     : `<span>no link</span>`;
   const notes = application.notes ? `<p class="notes">${escapeHTML(application.notes)}</p>` : "";
-  const contact = application.contact ? `<span>${escapeHTML(application.contact)}</span>` : "<span>no contact</span>";
   const source = application.source ? `<span>${escapeHTML(application.source)}</span>` : "<span>source open</span>";
 
   return `
@@ -204,14 +200,6 @@ function renderApplication(application) {
         <div>
           <dt>source</dt>
           <dd>${source}</dd>
-        </div>
-        <div>
-          <dt>contact</dt>
-          <dd>${contact}</dd>
-        </div>
-        <div>
-          <dt>priority</dt>
-          <dd>${escapeHTML(application.priority)}</dd>
         </div>
       </dl>
 
@@ -260,8 +248,6 @@ function fillForm(application) {
   form.elements.appliedDate.value = application.appliedDate;
   form.elements.status.value = application.status;
   form.elements.source.value = application.source;
-  form.elements.priority.value = application.priority;
-  form.elements.contact.value = application.contact;
   form.elements.notes.value = application.notes;
   submitButton.textContent = "save changes";
   cancelEditButton.hidden = false;
@@ -273,7 +259,6 @@ function resetForm() {
   form.reset();
   form.elements.id.value = "";
   form.elements.status.value = "Applied";
-  form.elements.priority.value = "Normal";
   submitButton.textContent = "add application";
   cancelEditButton.hidden = true;
   formError.textContent = "";
@@ -306,8 +291,6 @@ function normalizeApplication(application) {
     appliedDate: String(application.appliedDate || "").trim(),
     status: STATUS_META[application.status] ? application.status : "Applied",
     source: String(application.source || "").trim(),
-    priority: ["High", "Normal", "Low"].includes(application.priority) ? application.priority : "Normal",
-    contact: String(application.contact || "").trim(),
     notes: String(application.notes || "").trim(),
     updatedAt: String(application.updatedAt || new Date().toISOString()),
   };
