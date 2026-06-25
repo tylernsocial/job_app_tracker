@@ -12,7 +12,6 @@ const jobList = document.getElementById("job-list");
 const formError = document.getElementById("form-error");
 const submitButton = document.getElementById("submit-button");
 const cancelEditButton = document.getElementById("cancel-edit");
-const resetFormButton = document.getElementById("reset-form");
 const searchInput = document.getElementById("search");
 const sortSelect = document.getElementById("sort");
 const filterButtons = document.querySelectorAll("[data-filter]");
@@ -20,6 +19,7 @@ const totalCount = document.getElementById("total-count");
 const activeCount = document.getElementById("active-count");
 const interviewCount = document.getElementById("interview-count");
 const successCount = document.getElementById("success-count");
+const rejectedCount = document.getElementById("rejected-count");
 
 let applications = loadApplications();
 let activeFilter = "All";
@@ -121,7 +121,6 @@ filterButtons.forEach((button) => {
 searchInput.addEventListener("input", renderApplications);
 sortSelect.addEventListener("change", renderApplications);
 cancelEditButton.addEventListener("click", resetForm);
-resetFormButton.addEventListener("click", resetForm);
 
 function render() {
   renderSummary();
@@ -133,6 +132,7 @@ function renderSummary() {
   activeCount.textContent = String(applications.filter((item) => item.status !== "Rejected" && item.status !== "Accepted").length);
   interviewCount.textContent = String(applications.filter((item) => item.status === "Interviewing").length);
   successCount.textContent = String(applications.filter((item) => item.status === "Accepted").length);
+  rejectedCount.textContent = String(applications.filter((item) => item.status === "Rejected").length);
 }
 
 function renderApplications() {
