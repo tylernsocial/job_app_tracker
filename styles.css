@@ -124,6 +124,17 @@ a:hover {
   margin: 1.2rem 0 0;
 }
 
+.mascot {
+  width: min(8rem, 52vw);
+  margin-top: 2rem;
+}
+
+.mascot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .workspace {
   min-width: 0;
   display: grid;
@@ -382,6 +393,10 @@ a {
 
   .rail {
     position: static;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 1rem;
+    align-items: start;
   }
 
   h1 {
@@ -392,6 +407,13 @@ a {
   .nav-list {
     grid-template-columns: repeat(2, max-content);
     column-gap: 1.25rem;
+  }
+
+  .mascot {
+    grid-column: 2;
+    grid-row: 1 / span 4;
+    width: clamp(5rem, 20vw, 7rem);
+    margin-top: 0;
   }
 
   .summary-grid,
@@ -410,12 +432,23 @@ a {
     width: min(100% - 28px, 1120px);
   }
 
+  .rail {
+    grid-template-columns: 1fr;
+  }
+
   .nav-list,
   .summary-grid,
   .form-grid,
   .job-details,
   .job-main {
     grid-template-columns: 1fr;
+  }
+
+  .mascot {
+    grid-column: auto;
+    grid-row: auto;
+    width: 5.5rem;
+    margin-top: 0.75rem;
   }
 
   .job-main {
