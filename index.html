@@ -7,43 +7,126 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main class="app">
-      <h1>Job Application Tracker</h1>
+    <main class="shell">
+      <aside class="rail" aria-label="Tracker navigation">
+        <p class="eyebrow">Job App</p>
+        <h1>Application Tracker</h1>
 
-      <form id="job-form" class="card">
-        <p id="form-error" class="form-error" role="alert" aria-live="polite"></p>
+        <nav class="nav-list" aria-label="Status filters">
+          <button class="nav-link is-active" type="button" data-filter="All">all applications</button>
+          <button class="nav-link" type="button" data-filter="Applied">applied</button>
+          <button class="nav-link" type="button" data-filter="Interviewing">interviewing</button>
+          <button class="nav-link" type="button" data-filter="Accepted">accepted</button>
+          <button class="nav-link" type="button" data-filter="Rejected">rejected</button>
+        </nav>
 
-        <label for="company">
-          Company
-          <input id="company" name="company" type="text" required />
-        </label>
+        <button id="reset-form" class="text-button" type="button">new application</button>
+        <p class="microcopy">Stored locally in this browser.</p>
+      </aside>
 
-        <label for="role">
-          Role
-          <input id="role" name="role" type="text" required />
-        </label>
+      <section class="workspace" aria-label="Job application workspace">
+        <section class="summary-grid" aria-label="Application totals">
+          <article>
+            <span id="total-count">0</span>
+            <p>total</p>
+          </article>
+          <article>
+            <span id="active-count">0</span>
+            <p>active</p>
+          </article>
+          <article>
+            <span id="interview-count">0</span>
+            <p>interviews</p>
+          </article>
+          <article>
+            <span id="success-count">0</span>
+            <p>accepted</p>
+          </article>
+        </section>
 
-        <label for="appliedDate">
-          Applied Date
-          <input id="appliedDate" name="appliedDate" type="date" required />
-        </label>
+        <form id="job-form" class="tracker-form">
+          <input id="application-id" name="id" type="hidden" />
+          <p id="form-error" class="form-error" role="alert" aria-live="polite"></p>
 
-        <label for="status">
-          Status
-          <select id="status" name="status">
-            <option value="Applied">Applied</option>
-            <option value="Interviewing">Interviewing</option>
-            <option value="Offer">Offer</option>
-            <option value="Rejected">Rejected</option>
-          </select>
-        </label>
+          <div class="form-grid">
+            <label for="company">
+              company
+              <input id="company" name="company" type="text" autocomplete="organization" required />
+            </label>
 
-        <button type="submit">Add Application</button>
-      </form>
+            <label for="role">
+              role
+              <input id="role" name="role" type="text" autocomplete="off" required />
+            </label>
 
-      <section class="card">
-        <h2>Your Applications</h2>
-        <ul id="job-list" class="job-list"></ul>
+            <label for="applicationLink">
+              application link
+              <input id="applicationLink" name="applicationLink" type="url" placeholder="https://..." />
+            </label>
+
+            <label for="appliedDate">
+              applied date
+              <input id="appliedDate" name="appliedDate" type="date" required />
+            </label>
+
+            <label for="status">
+              status
+              <select id="status" name="status">
+                <option value="Applied">Applied</option>
+                <option value="Interviewing">Interviewing</option>
+                <option value="Accepted">Accepted</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+            </label>
+
+            <label for="source">
+              source
+              <input id="source" name="source" type="text" placeholder="LinkedIn, referral, company site" />
+            </label>
+
+            <label for="priority">
+              priority
+              <select id="priority" name="priority">
+                <option value="Normal">Normal</option>
+                <option value="High">High</option>
+                <option value="Low">Low</option>
+              </select>
+            </label>
+
+            <label for="contact">
+              contact
+              <input id="contact" name="contact" type="text" placeholder="Recruiter or hiring manager" />
+            </label>
+          </div>
+
+          <label for="notes">
+            notes
+            <textarea id="notes" name="notes" rows="3" placeholder="Follow-up timing, interview details, salary range..."></textarea>
+          </label>
+
+          <div class="form-actions">
+            <button id="submit-button" type="submit">add application</button>
+            <button id="cancel-edit" class="text-button" type="button" hidden>cancel edit</button>
+          </div>
+        </form>
+
+        <section class="list-tools" aria-label="Application tools">
+          <label class="search-label" for="search">
+            search
+            <input id="search" type="search" placeholder="company, role, source, notes" />
+          </label>
+          <label class="sort-label" for="sort">
+            sort
+            <select id="sort">
+              <option value="newest">Newest applied</option>
+              <option value="oldest">Oldest applied</option>
+              <option value="company">Company A-Z</option>
+              <option value="status">Status</option>
+            </select>
+          </label>
+        </section>
+
+        <section id="job-list" class="job-list" aria-live="polite"></section>
       </section>
     </main>
 

@@ -1,12 +1,13 @@
 # Job Application Tracker
 
-A simple job application tracker built with HTML, CSS, and JavaScript.
+A minimalist job application tracker built with HTML, CSS, and JavaScript.
 
 ## Features
 
-- Add job applications with company, role, date, and status
-- View all saved applications in a clean list
-- Delete applications you no longer want to track
+- Track company, role, application link, applied date, status, source, priority, contact, and notes
+- Color-coded statuses for applied, interviewing, accepted, and rejected applications
+- Search, filter by status, and sort saved applications
+- Edit, delete, and quickly update status from the application list
 - Data persists in `localStorage`
 
 ## Run locally
