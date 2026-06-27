@@ -229,12 +229,6 @@ a:hover {
   background: var(--paper);
 }
 
-.funnel-round-1 { color: #4f8d6b; }
-.funnel-round-2 { color: #527c9f; }
-.funnel-round-3 { color: #7b6f9c; }
-.funnel-offers { color: var(--offer); }
-.funnel-accepted { color: #4e9993; }
-
 .funnel-rejected-branch {
   position: absolute;
   top: 34px;

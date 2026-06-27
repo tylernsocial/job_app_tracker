@@ -14,7 +14,7 @@ function renderFunnel() {
       rejectedValue: applications.filter(
         (item) => item.status === "Rejected" && item.interviewRound === round
       ).length,
-      colorClass: `funnel-round funnel-round-${((round - 1) % 3) + 1}`,
+      color: interviewStageColor(round),
     };
   });
 
@@ -25,18 +25,18 @@ function renderFunnel() {
       rejectedValue: applications.filter(
         (item) => item.status === "Rejected" && !item.interviewRound
       ).length,
-      colorClass: "funnel-applications",
+      color: "#50759b",
     },
     ...interviewStages,
     {
       label: "Offers",
       value: applications.filter((item) => item.status === "Offer").length,
-      colorClass: "funnel-offers",
+      color: "#b96f36",
     },
     {
       label: "Accepted",
       value: applications.filter((item) => item.status === "Accepted").length,
-      colorClass: "funnel-accepted",
+      color: "#397a54",
     },
   ];
 
@@ -49,7 +49,7 @@ function renderFunnel() {
       ${stages
         .map(
           (stage, index) => `
-            <article class="funnel-stage ${stage.colorClass}" style="--step-index: ${index}">
+            <article class="funnel-stage" style="--step-index: ${index}; color: ${stage.color}">
               <span class="funnel-stage-index">${String(index + 1).padStart(2, "0")}</span>
               <p class="funnel-stage-label">${stage.label}</p>
               <strong class="funnel-stage-value">${stage.value}</strong>
@@ -68,6 +68,11 @@ function renderFunnel() {
         .join("")}
     </div>
   `;
+}
+
+function interviewStageColor(round) {
+  const hue = ((round * 137.508 + 18) % 360).toFixed(3);
+  return `hsl(${hue} 34% 45%)`;
 }
 
 function loadApplications() {
