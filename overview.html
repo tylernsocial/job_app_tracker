@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pipeline Overview · Job Application Tracker</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <aside class="rail" aria-label="Tracker navigation">
+        <p class="eyebrow">Job App</p>
+        <h1>Application Tracker</h1>
+
+        <nav class="nav-list" aria-label="Tracker views">
+          <a class="nav-link" href="./index.html">all applications</a>
+          <a class="nav-link" href="./index.html?filter=Applied">applied</a>
+          <a class="nav-link" href="./index.html?filter=Interviewing">interviewing</a>
+          <a class="nav-link" href="./index.html?filter=Offer">offers</a>
+          <a class="nav-link" href="./index.html?filter=Accepted">accepted</a>
+          <a class="nav-link" href="./index.html?filter=Rejected">rejected</a>
+          <a class="nav-link overview-link is-active" href="./overview.html" aria-current="page">overview</a>
+        </nav>
+
+        <p class="microcopy">Stored locally in this browser.</p>
+
+        <div class="mascot" aria-label="Tracker mascot">
+          <img src="./assets/mascot.gif" alt="Tracker mascot" />
+        </div>
+      </aside>
+
+      <section class="workspace overview-workspace" aria-label="Pipeline overview">
+        <header class="overview-header">
+          <h2>Pipeline overview</h2>
+          <p>Applications that reached each stage, with rejections shown at the stage where they happened.</p>
+        </header>
+
+        <section class="application-funnel" aria-label="Job application funnel">
+          <div id="funnel-timeline" class="funnel-scroll"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="./overview.js"></script>
+  </body>
+</html>

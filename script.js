@@ -1,8 +1,9 @@
 const STORAGE_KEY = "jobApplications";
-const STATUS_ORDER = ["Applied", "Interviewing", "Accepted", "Rejected"];
+const STATUS_ORDER = ["Applied", "Interviewing", "Offer", "Accepted", "Rejected"];
 const STATUS_META = {
   Applied: { label: "Applied", className: "status-applied" },
   Interviewing: { label: "Interviewing", className: "status-interviewing" },
+  Offer: { label: "Offer", className: "status-offer" },
   Accepted: { label: "Accepted", className: "status-accepted" },
   Rejected: { label: "Rejected", className: "status-rejected" },
 };
@@ -15,14 +16,21 @@ const cancelEditButton = document.getElementById("cancel-edit");
 const searchInput = document.getElementById("search");
 const sortSelect = document.getElementById("sort");
 const filterButtons = document.querySelectorAll("[data-filter]");
-const totalCount = document.getElementById("total-count");
-const activeCount = document.getElementById("active-count");
-const interviewCount = document.getElementById("interview-count");
-const successCount = document.getElementById("success-count");
-const rejectedCount = document.getElementById("rejected-count");
+const statusInput = document.getElementById("status");
+const interviewRoundInput = document.getElementById("interviewRound");
+const interviewRoundField = document.getElementById("interview-round-field");
+const interviewRoundLabel = document.getElementById("interview-round-label");
 
 let applications = loadApplications();
 let activeFilter = "All";
+
+const requestedFilter = new URLSearchParams(window.location.search).get("filter");
+if (requestedFilter === "All" || STATUS_META[requestedFilter]) {
+  activeFilter = requestedFilter;
+  filterButtons.forEach((button) =>
+    button.classList.toggle("is-active", button.dataset.filter === activeFilter)
+  );
+}
 
 render();
 
@@ -38,6 +46,7 @@ form.addEventListener("submit", (event) => {
     applicationLink: formData.get("applicationLink"),
     appliedDate: formData.get("appliedDate"),
     status: formData.get("status"),
+    interviewRound: formData.get("interviewRound"),
     source: formData.get("source"),
     notes: formData.get("notes"),
     updatedAt: new Date().toISOString(),
@@ -103,7 +112,13 @@ jobList.addEventListener("change", (event) => {
 
   applications = applications.map((application) =>
     application.id === select.dataset.id
-      ? { ...application, status: select.value, updatedAt: new Date().toISOString() }
+      ? {
+          ...application,
+          status: select.value,
+          interviewRound:
+            select.value === "Interviewing" && !application.interviewRound ? 1 : application.interviewRound,
+          updatedAt: new Date().toISOString(),
+        }
       : application
   );
   saveApplications();
@@ -121,18 +136,10 @@ filterButtons.forEach((button) => {
 searchInput.addEventListener("input", renderApplications);
 sortSelect.addEventListener("change", renderApplications);
 cancelEditButton.addEventListener("click", resetForm);
+statusInput.addEventListener("change", updateInterviewRoundField);
 
 function render() {
-  renderSummary();
   renderApplications();
-}
-
-function renderSummary() {
-  totalCount.textContent = String(applications.length);
-  activeCount.textContent = String(applications.filter((item) => item.status !== "Rejected" && item.status !== "Accepted").length);
-  interviewCount.textContent = String(applications.filter((item) => item.status === "Interviewing").length);
-  successCount.textContent = String(applications.filter((item) => item.status === "Accepted").length);
-  rejectedCount.textContent = String(applications.filter((item) => item.status === "Rejected").length);
 }
 
 function renderApplications() {
@@ -177,6 +184,9 @@ function renderApplication(application) {
     : `<span>no link</span>`;
   const notes = application.notes ? `<p class="notes">${escapeHTML(application.notes)}</p>` : "";
   const source = application.source ? `<span>${escapeHTML(application.source)}</span>` : "<span>source open</span>";
+  const interviewRound = application.interviewRound
+    ? `<div><dt>round</dt><dd>${application.interviewRound}</dd></div>`
+    : "";
 
   return `
     <article class="job-item ${status.className}">
@@ -201,6 +211,7 @@ function renderApplication(application) {
           <dt>source</dt>
           <dd>${source}</dd>
         </div>
+        ${interviewRound}
       </dl>
 
       ${notes}
@@ -247,11 +258,13 @@ function fillForm(application) {
   form.elements.applicationLink.value = application.applicationLink;
   form.elements.appliedDate.value = application.appliedDate;
   form.elements.status.value = application.status;
+  form.elements.interviewRound.value = application.interviewRound || "";
   form.elements.source.value = application.source;
   form.elements.notes.value = application.notes;
   submitButton.textContent = "save changes";
   cancelEditButton.hidden = false;
   formError.textContent = "";
+  updateInterviewRoundField();
   form.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -259,9 +272,23 @@ function resetForm() {
   form.reset();
   form.elements.id.value = "";
   form.elements.status.value = "Applied";
+  form.elements.interviewRound.value = "";
   submitButton.textContent = "add application";
   cancelEditButton.hidden = true;
   formError.textContent = "";
+  updateInterviewRoundField();
+}
+
+function updateInterviewRoundField() {
+  const isInterviewing = statusInput.value === "Interviewing";
+  const tracksInterviewProgress = statusInput.value !== "Applied";
+  interviewRoundField.hidden = !tracksInterviewProgress;
+  interviewRoundInput.required = isInterviewing;
+  interviewRoundLabel.textContent = isInterviewing
+    ? "current interview round"
+    : statusInput.value === "Rejected"
+      ? "interview round rejected at (optional)"
+      : "furthest interview round (optional)";
 }
 
 function loadApplications() {
@@ -290,6 +317,10 @@ function normalizeApplication(application) {
     applicationLink: String(application.applicationLink || application.link || "").trim(),
     appliedDate: String(application.appliedDate || "").trim(),
     status: STATUS_META[application.status] ? application.status : "Applied",
+    interviewRound:
+      Number.isInteger(Number(application.interviewRound)) && Number(application.interviewRound) > 0
+        ? Number(application.interviewRound)
+        : null,
     source: String(application.source || "").trim(),
     notes: String(application.notes || "").trim(),
     updatedAt: String(application.updatedAt || new Date().toISOString()),

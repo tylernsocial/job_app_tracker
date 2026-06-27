@@ -6,12 +6,17 @@
   --field: #e6e6e6;
   --applied: #476a92;
   --interviewing: #9a6a22;
+  --offer: #b8682d;
   --accepted: #2f7354;
   --rejected: #9a3d3d;
 }
 
 * {
   box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 body {
@@ -54,7 +59,7 @@ button {
 .microcopy,
 dt,
 label,
-.summary-grid p {
+.funnel-stage-label {
   color: var(--muted);
   font-size: 0.82rem;
   line-height: 1.35;
@@ -92,6 +97,11 @@ h1 {
 .nav-link {
   position: relative;
   color: var(--ink);
+  text-decoration: none;
+}
+
+.overview-link {
+  margin-top: 0.85rem;
 }
 
 .nav-link::before {
@@ -141,27 +151,152 @@ a:hover {
   gap: 1.35rem;
 }
 
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 1px;
+.application-funnel {
+  min-width: 0;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }
 
-.summary-grid article {
+.funnel-scroll {
+  width: 100%;
+  max-width: 100%;
   min-width: 0;
-  padding: 0.85rem 1rem 0.75rem 0;
 }
 
-.summary-grid span {
+.funnel-timeline {
+  --step-size: min(var(--desktop-step, 64px), 8vw);
+  padding: 2.5rem clamp(0.25rem, 2vw, 1.25rem) 1.75rem;
+}
+
+.funnel-stage {
+  position: relative;
+  width: calc(100% - (var(--step-index) * var(--step-size)));
+  min-width: 0;
+  min-height: 86px;
+  margin-left: calc(var(--step-index) * var(--step-size));
+  color: var(--applied);
+  text-align: left;
+}
+
+.funnel-stage:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 50px;
+  left: 8px;
+  width: var(--step-size);
+  height: 86px;
+  border-bottom: 1px solid currentColor;
+  border-left: 1px solid currentColor;
+  opacity: 0.72;
+}
+
+.funnel-stage-index,
+.funnel-stage-label,
+.funnel-stage-value {
   display: block;
-  font-size: 1.65rem;
+}
+
+.funnel-stage-index {
+  margin: 0 0 0.35rem 2rem;
+  color: #969696;
+  font-size: 0.75rem;
+}
+
+.funnel-stage-label {
+  margin: 0 7rem 0 2rem;
+  color: var(--muted);
+  line-height: 1.25;
+}
+
+.funnel-stage-value {
+  margin: 0.4rem 0 0 2rem;
+  font-size: 1.35rem;
+  font-weight: 400;
   line-height: 1;
 }
 
-.summary-grid p {
-  margin: 0.35rem 0 0;
+.funnel-node {
+  position: absolute;
+  z-index: 1;
+  display: block;
+  width: 18px;
+  height: 18px;
+  top: 41px;
+  left: 0;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: var(--paper);
+}
+
+.funnel-round-1 { color: #4f8d6b; }
+.funnel-round-2 { color: #527c9f; }
+.funnel-round-3 { color: #7b6f9c; }
+.funnel-offers { color: var(--offer); }
+.funnel-accepted { color: #4e9993; }
+
+.funnel-rejected-branch {
+  position: absolute;
+  top: 34px;
+  right: 0;
+  width: 84px;
+  color: #c65d5d;
+  font-size: 0.75rem;
+  text-align: left;
+}
+
+.funnel-rejected-branch::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  right: calc(100% + 7px);
+  width: clamp(30px, 7vw, 68px);
+  height: 1px;
+  border-top: 1px solid currentColor;
+}
+
+.funnel-rejected-branch::after {
+  content: "";
+  position: absolute;
+  top: 13px;
+  left: -7px;
+  border: 4px solid transparent;
+  border-left-color: currentColor;
+}
+
+.funnel-rejected-branch span,
+.funnel-rejected-branch strong {
+  display: block;
+  font-weight: 400;
+}
+
+.funnel-rejected-branch span {
+  padding-top: 0.25rem;
+  border-top: 1px solid currentColor;
+  color: var(--muted);
+}
+
+.funnel-rejected-branch strong {
+  margin-top: 0.3rem;
+  font-size: 1rem;
+}
+
+.overview-header {
+  padding-bottom: 0.4rem;
+}
+
+.overview-header h2 {
+  margin: 0;
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+  font-weight: 600;
+}
+
+.overview-header p {
+  max-width: 42rem;
+  margin: 0.45rem 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
 }
 
 .tracker-form,
@@ -282,6 +417,10 @@ button[type="submit"]:hover {
   background: var(--interviewing);
 }
 
+.job-item.status-offer::before {
+  background: var(--offer);
+}
+
 .job-item.status-accepted::before {
   background: var(--accepted);
 }
@@ -321,6 +460,10 @@ button[type="submit"]:hover {
 
 .status-pill.status-interviewing {
   color: var(--interviewing);
+}
+
+.status-pill.status-offer {
+  color: var(--offer);
 }
 
 .status-pill.status-accepted {
@@ -416,7 +559,6 @@ a {
     margin-top: 0;
   }
 
-  .summary-grid,
   .form-grid,
   .job-details {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -437,7 +579,6 @@ a {
   }
 
   .nav-list,
-  .summary-grid,
   .form-grid,
   .job-details,
   .job-main {
@@ -459,7 +600,8 @@ a {
     justify-self: start;
   }
 
-  .summary-grid article {
-    padding-bottom: 0.35rem;
+  .funnel-timeline {
+    --step-size: var(--mobile-step, 22px);
   }
+
 }

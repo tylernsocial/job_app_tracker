@@ -16,8 +16,10 @@
           <button class="nav-link is-active" type="button" data-filter="All">all applications</button>
           <button class="nav-link" type="button" data-filter="Applied">applied</button>
           <button class="nav-link" type="button" data-filter="Interviewing">interviewing</button>
+          <button class="nav-link" type="button" data-filter="Offer">offers</button>
           <button class="nav-link" type="button" data-filter="Accepted">accepted</button>
           <button class="nav-link" type="button" data-filter="Rejected">rejected</button>
+          <a class="nav-link overview-link" href="./overview.html">overview</a>
         </nav>
 
         <p class="microcopy">Stored locally in this browser.</p>
@@ -28,29 +30,6 @@
       </aside>
 
       <section class="workspace" aria-label="Job application workspace">
-        <section class="summary-grid" aria-label="Application totals">
-          <article>
-            <span id="total-count">0</span>
-            <p>total</p>
-          </article>
-          <article>
-            <span id="active-count">0</span>
-            <p>active</p>
-          </article>
-          <article>
-            <span id="interview-count">0</span>
-            <p>interviews</p>
-          </article>
-          <article>
-            <span id="success-count">0</span>
-            <p>accepted</p>
-          </article>
-          <article>
-            <span id="rejected-count">0</span>
-            <p>rejected</p>
-          </article>
-        </section>
-
         <form id="job-form" class="tracker-form">
           <input id="application-id" name="id" type="hidden" />
           <p id="form-error" class="form-error" role="alert" aria-live="polite"></p>
@@ -81,9 +60,15 @@
               <select id="status" name="status">
                 <option value="Applied">Applied</option>
                 <option value="Interviewing">Interviewing</option>
+                <option value="Offer">Offer</option>
                 <option value="Accepted">Accepted</option>
                 <option value="Rejected">Rejected</option>
               </select>
+            </label>
+
+            <label id="interview-round-field" for="interviewRound" hidden>
+              <span id="interview-round-label">interview round</span>
+              <input id="interviewRound" name="interviewRound" type="number" min="1" step="1" placeholder="1" />
             </label>
 
             <label for="source">
