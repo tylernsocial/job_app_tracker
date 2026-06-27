@@ -30,7 +30,7 @@ function renderFunnel() {
     ...interviewStages,
     {
       label: "Offers",
-      value: applications.filter((item) => item.status === "Offer").length,
+      value: applications.filter((item) => item.status === "Offer" || item.status === "Accepted").length,
       color: "#b96f36",
     },
     {
