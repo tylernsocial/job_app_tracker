@@ -498,6 +498,33 @@ a {
   text-underline-offset: 0.18rem;
 }
 
+.github-link {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--ink);
+  opacity: 0.78;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.github-link:hover,
+.github-link:focus-visible {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.github-link svg {
+  display: block;
+  width: 1.85rem;
+  height: 1.85rem;
+  fill: currentColor;
+}
+
 .notes {
   max-width: 58rem;
   margin: 0;
@@ -598,6 +625,11 @@ a {
 
   .funnel-timeline {
     --step-size: var(--mobile-step, 22px);
+  }
+
+  .github-link {
+    right: 0.85rem;
+    bottom: 0.85rem;
   }
 
 }
