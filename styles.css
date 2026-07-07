@@ -500,7 +500,7 @@ a {
 
 .github-link {
   position: fixed;
-  right: 1.25rem;
+  left: 1.25rem;
   bottom: 1.25rem;
   z-index: 10;
   display: grid;
@@ -628,7 +628,7 @@ a {
   }
 
   .github-link {
-    right: 0.85rem;
+    left: 0.85rem;
     bottom: 0.85rem;
   }
 
