@@ -27,6 +27,11 @@
         <div class="mascot" aria-label="Tracker mascot">
           <img src="./assets/mascot.gif" alt="Tracker mascot" />
         </div>
+
+        <div class="export-panel">
+          <button id="export-csv" class="primary-button" type="button">export csv</button>
+          <p id="export-message" class="export-message" aria-live="polite"></p>
+        </div>
       </aside>
 
       <section class="workspace" aria-label="Job application workspace">
@@ -83,7 +88,7 @@
           </label>
 
           <div class="form-actions">
-            <button id="submit-button" type="submit">add application</button>
+            <button id="submit-button" class="primary-button" type="submit">add application</button>
             <button id="cancel-edit" class="text-button" type="button" hidden>cancel edit</button>
           </div>
         </form>

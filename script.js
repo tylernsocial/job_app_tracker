@@ -15,6 +15,8 @@ const submitButton = document.getElementById("submit-button");
 const cancelEditButton = document.getElementById("cancel-edit");
 const searchInput = document.getElementById("search");
 const sortSelect = document.getElementById("sort");
+const exportButton = document.getElementById("export-csv");
+const exportMessage = document.getElementById("export-message");
 const filterButtons = document.querySelectorAll("[data-filter]");
 const statusInput = document.getElementById("status");
 const interviewRoundInput = document.getElementById("interviewRound");
@@ -135,10 +137,12 @@ filterButtons.forEach((button) => {
 
 searchInput.addEventListener("input", renderApplications);
 sortSelect.addEventListener("change", renderApplications);
+exportButton.addEventListener("click", exportApplicationsToCSV);
 cancelEditButton.addEventListener("click", resetForm);
 statusInput.addEventListener("change", updateInterviewRoundField);
 
 function render() {
+  updateExportState();
   renderApplications();
 }
 
@@ -175,6 +179,55 @@ function renderApplications() {
   }
 
   jobList.innerHTML = visibleApplications.map(renderApplication).join("");
+}
+
+function updateExportState() {
+  const hasApplications = applications.length > 0;
+  exportButton.disabled = !hasApplications;
+  exportMessage.textContent = hasApplications ? "" : "nothing to export yet.";
+}
+
+function exportApplicationsToCSV() {
+  if (applications.length === 0) {
+    updateExportState();
+    return;
+  }
+
+  const columns = [
+    ["Company", "company"],
+    ["Job title", "role"],
+    ["Application status", "status"],
+    ["Current interview round", "interviewRound"],
+    ["Application date", "appliedDate"],
+    ["Job posting URL", "applicationLink"],
+    ["Source", "source"],
+    ["Notes", "notes"],
+  ];
+
+  const csvRows = [
+    columns.map(([label]) => escapeCSVValue(label)).join(","),
+    ...applications.map((application) =>
+      columns
+        .map(([, field]) => {
+          const value = field === "appliedDate" ? formatDateForCSV(application[field]) : application[field];
+
+          return escapeCSVValue(value);
+        })
+        .join(",")
+    ),
+  ];
+
+  const csvContent = `\uFEFF${csvRows.join("\r\n")}`;
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
+  const downloadUrl = URL.createObjectURL(blob);
+  const downloadLink = document.createElement("a");
+
+  downloadLink.href = downloadUrl;
+  downloadLink.download = `job-applications-${getLocalDateStamp()}.csv`;
+  document.body.append(downloadLink);
+  downloadLink.click();
+  downloadLink.remove();
+  setTimeout(() => URL.revokeObjectURL(downloadUrl), 0);
 }
 
 function renderApplication(application) {
@@ -334,6 +387,28 @@ function formatDate(value) {
 
   const date = new Date(`${value}T00:00:00`);
   return new Intl.DateTimeFormat("en", { month: "short", day: "numeric", year: "numeric" }).format(date);
+}
+
+function formatDateForCSV(value) {
+  const dateText = value ? String(value).trim() : "";
+  return dateText ? `="${dateText}"` : "";
+}
+
+function getLocalDateStamp() {
+  return formatDateObjectForCSV(new Date());
+}
+
+function formatDateObjectForCSV(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function escapeCSVValue(value) {
+  const text = value === null || value === undefined ? "" : String(value);
+  return `"${text.replaceAll('"', '""')}"`;
 }
 
 function isValidURL(value) {
