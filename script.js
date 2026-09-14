@@ -16,6 +16,8 @@ const cancelEditButton = document.getElementById("cancel-edit");
 const searchInput = document.getElementById("search");
 const sortSelect = document.getElementById("sort");
 const exportButton = document.getElementById("export-csv");
+const importButton = document.getElementById("import-csv");
+const importFileInput = document.getElementById("import-csv-file");
 const exportMessage = document.getElementById("export-message");
 const filterButtons = document.querySelectorAll("[data-filter]");
 const statusInput = document.getElementById("status");
@@ -138,6 +140,8 @@ filterButtons.forEach((button) => {
 searchInput.addEventListener("input", renderApplications);
 sortSelect.addEventListener("change", renderApplications);
 exportButton.addEventListener("click", exportApplicationsToCSV);
+importButton.addEventListener("click", () => importFileInput.click());
+importFileInput.addEventListener("change", importApplicationsFromCSV);
 cancelEditButton.addEventListener("click", resetForm);
 statusInput.addEventListener("change", updateInterviewRoundField);
 
@@ -228,6 +232,207 @@ function exportApplicationsToCSV() {
   downloadLink.click();
   downloadLink.remove();
   setTimeout(() => URL.revokeObjectURL(downloadUrl), 0);
+}
+
+async function importApplicationsFromCSV() {
+  const [file] = importFileInput.files;
+  importFileInput.value = "";
+
+  if (!file) {
+    return;
+  }
+
+  importButton.disabled = true;
+  exportMessage.textContent = "importing...";
+
+  try {
+    const { importedApplications, invalidCount } = parseApplicationsCSV(await file.text());
+    const existingKeys = new Set(applications.map(getApplicationDuplicateKey));
+    const uniqueImports = [];
+    let duplicateCount = 0;
+
+    importedApplications.forEach((application) => {
+      const duplicateKey = getApplicationDuplicateKey(application);
+      if (existingKeys.has(duplicateKey)) {
+        duplicateCount += 1;
+        return;
+      }
+
+      existingKeys.add(duplicateKey);
+      uniqueImports.push(application);
+    });
+
+    if (uniqueImports.length > 0) {
+      applications = [...uniqueImports, ...applications];
+      saveApplications();
+      render();
+    }
+
+    const importedLabel = `${uniqueImports.length} application${uniqueImports.length === 1 ? "" : "s"} imported.`;
+    const duplicateLabel = duplicateCount
+      ? ` ${duplicateCount} duplicate${duplicateCount === 1 ? "" : "s"} skipped.`
+      : "";
+    const invalidLabel = invalidCount
+      ? ` ${invalidCount} invalid row${invalidCount === 1 ? "" : "s"} skipped.`
+      : "";
+    exportMessage.textContent = `${importedLabel}${duplicateLabel}${invalidLabel}`;
+  } catch (error) {
+    exportMessage.textContent = error instanceof Error ? error.message : "could not import that csv file.";
+  } finally {
+    importButton.disabled = false;
+  }
+}
+
+function parseApplicationsCSV(csvText) {
+  const rows = parseCSVRows(csvText.replace(/^\uFEFF/, ""));
+  if (rows.length < 2) {
+    throw new Error("the csv does not contain any applications.");
+  }
+
+  const columnAliases = {
+    company: "company",
+    jobtitle: "role",
+    applicationstatus: "status",
+    currentinterviewround: "interviewRound",
+    applicationdate: "appliedDate",
+    jobpostingurl: "applicationLink",
+    source: "source",
+    notes: "notes",
+  };
+  const columnIndexes = {};
+
+  rows[0].forEach((heading, index) => {
+    const normalizedHeading = heading.trim().toLowerCase().replace(/[^a-z0-9]/g, "");
+    const field = columnAliases[normalizedHeading];
+    if (field) {
+      columnIndexes[field] = index;
+    }
+  });
+
+  if (columnIndexes.company === undefined || columnIndexes.role === undefined || columnIndexes.appliedDate === undefined) {
+    throw new Error("use a csv created by this tracker's export button.");
+  }
+
+  const importedApplications = [];
+  let invalidCount = 0;
+
+  rows.slice(1).forEach((row) => {
+    if (row.every((value) => !value.trim())) {
+      return;
+    }
+
+    const getValue = (field) => {
+      const index = columnIndexes[field];
+      return index === undefined ? "" : String(row[index] || "").trim();
+    };
+    const company = getValue("company");
+    const role = getValue("role");
+    const appliedDate = normalizeImportedDate(getValue("appliedDate"));
+    const applicationLink = getValue("applicationLink");
+
+    if (!company || !role || !isValidDateInput(appliedDate) || (applicationLink && !isValidURL(applicationLink))) {
+      invalidCount += 1;
+      return;
+    }
+
+    const importedStatus = getValue("status");
+    const status = STATUS_ORDER.find((item) => item.toLowerCase() === importedStatus.toLowerCase()) || "Applied";
+    importedApplications.push(
+      normalizeApplication({
+        company,
+        role,
+        status,
+        interviewRound: getValue("interviewRound"),
+        appliedDate,
+        applicationLink,
+        source: getValue("source"),
+        notes: getValue("notes"),
+        updatedAt: new Date().toISOString(),
+      })
+    );
+  });
+
+  if (importedApplications.length === 0) {
+    throw new Error(
+      invalidCount ? "no valid applications were found in that csv." : "the csv does not contain any applications."
+    );
+  }
+
+  return { importedApplications, invalidCount };
+}
+
+function parseCSVRows(csvText) {
+  const rows = [];
+  let row = [];
+  let value = "";
+  let insideQuotes = false;
+
+  for (let index = 0; index < csvText.length; index += 1) {
+    const character = csvText[index];
+
+    if (insideQuotes) {
+      if (character === '"' && csvText[index + 1] === '"') {
+        value += '"';
+        index += 1;
+      } else if (character === '"') {
+        insideQuotes = false;
+      } else {
+        value += character;
+      }
+    } else if (character === '"' && value === "") {
+      insideQuotes = true;
+    } else if (character === ",") {
+      row.push(value);
+      value = "";
+    } else if (character === "\n") {
+      row.push(value.replace(/\r$/, ""));
+      rows.push(row);
+      row = [];
+      value = "";
+    } else {
+      value += character;
+    }
+  }
+
+  if (insideQuotes) {
+    throw new Error("the csv has an unfinished quoted value.");
+  }
+
+  if (value || row.length) {
+    row.push(value.replace(/\r$/, ""));
+    rows.push(row);
+  }
+
+  return rows;
+}
+
+function normalizeImportedDate(value) {
+  const formulaDate = value.match(/^="(\d{4}-\d{2}-\d{2})"$/);
+  return formulaDate ? formulaDate[1] : value;
+}
+
+function isValidDateInput(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return false;
+  }
+
+  const date = new Date(`${value}T00:00:00`);
+  return !Number.isNaN(date.getTime()) && formatDateObjectForCSV(date) === value;
+}
+
+function getApplicationDuplicateKey(application) {
+  return [
+    application.company,
+    application.role,
+    application.status,
+    application.interviewRound || "",
+    application.appliedDate,
+    application.applicationLink,
+    application.source,
+    application.notes,
+  ]
+    .map((value) => String(value).trim().toLowerCase())
+    .join("\u001F");
 }
 
 function renderApplication(application) {

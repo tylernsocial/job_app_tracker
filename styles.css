@@ -154,6 +154,16 @@ a:hover {
   margin-top: 1rem;
 }
 
+.secondary-button {
+  background: transparent;
+  color: var(--ink);
+}
+
+.secondary-button:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--paper);
+}
+
 .export-message {
   min-height: 1rem;
   margin: 0;
