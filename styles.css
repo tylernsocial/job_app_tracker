@@ -9,6 +9,29 @@
   --offer: #b8682d;
   --accepted: #2f7354;
   --rejected: #9a3d3d;
+  --subtle: #969696;
+  --notes: #3d3d3d;
+  --rejected-branch: #c65d5d;
+  --funnel-stage-lightness: 45%;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --paper: #181818;
+  --ink: #ededed;
+  --muted: #aaa;
+  --line: #444;
+  --field: #252525;
+  --applied: #81a8d2;
+  --interviewing: #d3a454;
+  --offer: #df9560;
+  --accepted: #71b993;
+  --rejected: #dc7979;
+  --subtle: #888;
+  --notes: #d0d0d0;
+  --rejected-branch: #e48484;
+  --funnel-stage-lightness: 67%;
+  color-scheme: dark;
 }
 
 * {
@@ -136,6 +159,15 @@ a:hover {
   margin: 1.2rem 0 0;
 }
 
+.theme-toggle {
+  margin-top: 0.75rem;
+  color: var(--muted);
+}
+
+.theme-toggle[aria-pressed="true"] {
+  color: var(--ink);
+}
+
 .mascot {
   width: min(8rem, 52vw);
   margin-top: 2rem;
@@ -226,7 +258,7 @@ a:hover {
 
 .funnel-stage-index {
   margin: 0 0 0.35rem 2rem;
-  color: #969696;
+  color: var(--subtle);
   font-size: 0.75rem;
 }
 
@@ -261,7 +293,7 @@ a:hover {
   top: 34px;
   right: 0;
   width: 84px;
-  color: #c65d5d;
+  color: var(--rejected-branch);
   font-size: 0.75rem;
   text-align: left;
 }
@@ -563,7 +595,7 @@ a {
 .notes {
   max-width: 58rem;
   margin: 0;
-  color: #3d3d3d;
+  color: var(--notes);
 }
 
 .row-actions select {

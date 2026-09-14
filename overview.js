@@ -25,18 +25,18 @@ function renderFunnel() {
       rejectedValue: applications.filter(
         (item) => item.status === "Rejected" && !item.interviewRound
       ).length,
-      color: "#50759b",
+      color: "var(--applied)",
     },
     ...interviewStages,
     {
       label: "Offers",
       value: applications.filter((item) => item.status === "Offer" || item.status === "Accepted").length,
-      color: "#b96f36",
+      color: "var(--offer)",
     },
     {
       label: "Accepted",
       value: applications.filter((item) => item.status === "Accepted").length,
-      color: "#397a54",
+      color: "var(--accepted)",
     },
   ];
 
@@ -72,7 +72,7 @@ function renderFunnel() {
 
 function interviewStageColor(round) {
   const hue = ((round * 137.508 + 18) % 360).toFixed(3);
-  return `hsl(${hue} 34% 45%)`;
+  return `hsl(${hue} 38% var(--funnel-stage-lightness))`;
 }
 
 function loadApplications() {
