@@ -196,6 +196,47 @@ a:hover {
   color: var(--paper);
 }
 
+.import-control {
+  position: relative;
+  width: max-content;
+}
+
+.import-help {
+  position: absolute;
+  z-index: 20;
+  top: 50%;
+  right: calc(100% + 0.75rem);
+  width: min(18rem, calc(100vw - 2rem));
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line);
+  background: var(--field);
+  color: var(--ink);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%) translateX(0.25rem);
+  transition: opacity 140ms ease, transform 140ms ease, visibility 140ms;
+  visibility: hidden;
+}
+
+.import-help::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  border: 6px solid transparent;
+  border-left-color: var(--line);
+  transform: translateY(-50%);
+}
+
+.import-control:hover .import-help,
+.import-control:focus-within .import-help {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+  visibility: visible;
+}
+
 .export-message {
   min-height: 1rem;
   margin: 0;
@@ -652,6 +693,30 @@ a {
   .form-grid,
   .job-details {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .import-help {
+    top: calc(100% + 0.6rem);
+    right: auto;
+    left: 0;
+    width: min(18rem, calc(100vw - 2.5rem));
+    transform: translateY(-0.25rem);
+  }
+
+  .import-help::before {
+    left: 1.2rem;
+    right: auto;
+    bottom: 100%;
+    top: auto;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: var(--line);
+    transform: none;
+  }
+
+  .import-control:hover .import-help,
+  .import-control:focus-within .import-help {
+    transform: translateY(0);
   }
 }
 

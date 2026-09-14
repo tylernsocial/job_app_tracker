@@ -34,8 +34,21 @@
 
         <div class="export-panel">
           <button id="export-csv" class="primary-button" type="button">export csv</button>
-          <button id="import-csv" class="primary-button secondary-button" type="button">import csv</button>
-          <input id="import-csv-file" type="file" accept=".csv,text/csv" hidden />
+          <div class="import-control">
+            <button
+              id="import-csv"
+              class="primary-button secondary-button"
+              type="button"
+              aria-describedby="import-csv-help"
+            >
+              import csv
+            </button>
+            <input id="import-csv-file" type="file" accept=".csv,text/csv" hidden />
+            <div id="import-csv-help" class="import-help" role="tooltip">
+              add a temporary application, press export csv, then use that file as your template. add your
+              applications to it and import the finished csv here.
+            </div>
+          </div>
           <p id="export-message" class="export-message" aria-live="polite"></p>
         </div>
       </aside>
