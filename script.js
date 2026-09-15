@@ -24,6 +24,7 @@ const statusInput = document.getElementById("status");
 const interviewRoundInput = document.getElementById("interviewRound");
 const interviewRoundField = document.getElementById("interview-round-field");
 const interviewRoundLabel = document.getElementById("interview-round-label");
+const backToTopButton = document.getElementById("back-to-top");
 
 let applications = loadApplications();
 let activeFilter = "All";
@@ -144,6 +145,18 @@ importButton.addEventListener("click", () => importFileInput.click());
 importFileInput.addEventListener("change", importApplicationsFromCSV);
 cancelEditButton.addEventListener("click", resetForm);
 statusInput.addEventListener("change", updateInterviewRoundField);
+window.addEventListener("scroll", updateBackToTopVisibility, { passive: true });
+window.addEventListener("resize", updateBackToTopVisibility);
+backToTopButton.addEventListener("click", () => {
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
+});
+updateBackToTopVisibility();
+
+function updateBackToTopVisibility() {
+  const revealPoint = Math.max(400, window.innerHeight * 0.6);
+  backToTopButton.hidden = window.scrollY < revealPoint;
+}
 
 function render() {
   updateExportState();
