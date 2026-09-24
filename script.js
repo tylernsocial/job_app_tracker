@@ -14,12 +14,12 @@ const formError = document.getElementById("form-error");
 const submitButton = document.getElementById("submit-button");
 const cancelEditButton = document.getElementById("cancel-edit");
 const searchInput = document.getElementById("search");
+const statusFilterSelect = document.getElementById("status-filter");
 const sortSelect = document.getElementById("sort");
 const exportButton = document.getElementById("export-csv");
 const importButton = document.getElementById("import-csv");
 const importFileInput = document.getElementById("import-csv-file");
 const exportMessage = document.getElementById("export-message");
-const filterButtons = document.querySelectorAll("[data-filter]");
 const statusInput = document.getElementById("status");
 const interviewRoundInput = document.getElementById("interviewRound");
 const interviewRoundField = document.getElementById("interview-round-field");
@@ -32,10 +32,8 @@ let activeFilter = "All";
 const requestedFilter = new URLSearchParams(window.location.search).get("filter");
 if (requestedFilter === "All" || STATUS_META[requestedFilter]) {
   activeFilter = requestedFilter;
-  filterButtons.forEach((button) =>
-    button.classList.toggle("is-active", button.dataset.filter === activeFilter)
-  );
 }
+statusFilterSelect.value = activeFilter;
 
 render();
 
@@ -130,12 +128,9 @@ jobList.addEventListener("change", (event) => {
   render();
 });
 
-filterButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    activeFilter = button.dataset.filter || "All";
-    filterButtons.forEach((item) => item.classList.toggle("is-active", item === button));
-    renderApplications();
-  });
+statusFilterSelect.addEventListener("change", () => {
+  activeFilter = statusFilterSelect.value;
+  renderApplications();
 });
 
 searchInput.addEventListener("input", renderApplications);
@@ -513,10 +508,6 @@ function sortApplications(first, second) {
 
   if (sortValue === "company") {
     return first.company.localeCompare(second.company);
-  }
-
-  if (sortValue === "status") {
-    return STATUS_ORDER.indexOf(first.status) - STATUS_ORDER.indexOf(second.status);
   }
 
   return new Date(second.appliedDate) - new Date(first.appliedDate);

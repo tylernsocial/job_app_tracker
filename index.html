@@ -13,13 +13,8 @@
         <p class="eyebrow">Your next path</p>
         <h1>Application Tracker</h1>
 
-        <nav class="nav-list" aria-label="Status filters">
-          <button class="nav-link is-active" type="button" data-filter="All">all applications</button>
-          <button class="nav-link" type="button" data-filter="Applied">applied</button>
-          <button class="nav-link" type="button" data-filter="Interviewing">interviewing</button>
-          <button class="nav-link" type="button" data-filter="Offer">offers</button>
-          <button class="nav-link" type="button" data-filter="Accepted">accepted</button>
-          <button class="nav-link" type="button" data-filter="Rejected">rejected</button>
+        <nav class="nav-list" aria-label="Tracker views">
+          <a class="nav-link is-active" href="./index.html" aria-current="page">applications</a>
           <a class="nav-link overview-link" href="./overview.html">overview</a>
         </nav>
 
@@ -117,13 +112,23 @@
             search
             <input id="search" type="search" placeholder="company, role, source, notes" />
           </label>
+          <label class="filter-label" for="status-filter">
+            status
+            <select id="status-filter">
+              <option value="All">All applications</option>
+              <option value="Applied">Applied</option>
+              <option value="Interviewing">Interviewing</option>
+              <option value="Offer">Offers</option>
+              <option value="Accepted">Accepted</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </label>
           <label class="sort-label" for="sort">
             sort
             <select id="sort">
               <option value="newest">Newest applied</option>
               <option value="oldest">Oldest applied</option>
               <option value="company">Company A-Z</option>
-              <option value="status">Status</option>
             </select>
           </label>
         </section>

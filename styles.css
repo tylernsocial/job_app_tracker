@@ -491,6 +491,7 @@ button[type="submit"]:disabled {
   flex: 1 1 280px;
 }
 
+.filter-label,
 .sort-label {
   flex: 0 1 210px;
 }
