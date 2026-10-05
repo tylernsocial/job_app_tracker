@@ -16,6 +16,7 @@ const cancelEditButton = document.getElementById("cancel-edit");
 const searchInput = document.getElementById("search");
 const statusFilterSelect = document.getElementById("status-filter");
 const sortSelect = document.getElementById("sort");
+const resultsCount = document.getElementById("results-count");
 const exportButton = document.getElementById("export-csv");
 const importButton = document.getElementById("import-csv");
 const importFileInput = document.getElementById("import-csv-file");
@@ -179,6 +180,10 @@ function renderApplications() {
         .includes(query);
     })
     .sort(sortApplications);
+
+  resultsCount.textContent = `${visibleApplications.length} ${
+    visibleApplications.length === 1 ? "application" : "applications"
+  }`;
 
   if (visibleApplications.length === 0) {
     jobList.innerHTML = `

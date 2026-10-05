@@ -496,6 +496,12 @@ button[type="submit"]:disabled {
   flex: 0 1 210px;
 }
 
+.results-count {
+  margin: 0.45rem 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
 .job-list {
   display: grid;
   gap: 0.95rem;
